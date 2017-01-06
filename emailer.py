@@ -1,4 +1,6 @@
-import requests
+import smtplib
+import weather
+import mailer
 
 def get_emails():
     emails = {}
@@ -23,25 +25,6 @@ def get_schedule():
 
     return schedule
 
-def get_weather_forcast():
-    url = 'http://api.openweathermap.org/data/2.5/weather?q=SanJose&units=metric&appid=oops'
-    weather_request = requests.get(url)
-    weather_json = weather_request.json()
-    print(weather_json)
-
-    description = weather_json['weather'][0]['description']
-    print(description)
-
-    temp_min = weather_json['main']['temp_min']
-    temp_max = weather_json['main']['temp_max']
-
-    print(temp_min)
-    print(temp_max)
-
-    forecast = 'The foreast for today is '
-    forecast += description + ' with a high of ' + str(temp_max)
-    forecast += ' and a low of ' + str(temp_min) + '.'
-    print(forecast)
 
 def main():
     emails = get_emails()
@@ -49,7 +32,9 @@ def main():
     schedule = get_schedule()
     print(schedule)
 
-    get_weather_forcast()
+    forecast = weather.get_weather_forcast()
+    print(forecast)
+
+    mailer.send_emails(emails, schedule, forecast)
 
 main()
-
