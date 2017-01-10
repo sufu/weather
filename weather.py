@@ -1,28 +1,40 @@
 import requests
-def get_weather_forcast():
+#cities = ['San Jose', 'Milpitas', 'Santa Clara']
+def get_weather_forcast(cities):
+    forecasts = []
+
     # Connecting to weather api
     try:
-        api_id = open('appid.txt', 'r').read().strip()
+        api_id = open('./info/appid.txt', 'r').read().strip()
         print(api_id)
     except FileNotFoundError as err:
         print(err)
 
-    url = 'http://api.openweathermap.org/data/2.5/weather?q=SanJose&units=metric'
-    url += api_id
-    print(url)
+    # for each city
+    for city in cities:
+        city_format = "".join(city.split())
 
-    weather_request = requests.get(url)
-    weather_json = weather_request.json()
-    print(weather_json)
+        url = 'http://api.openweathermap.org/data/2.5/weather?q='
+        url += city_format
+        url += '&units=metric'
+        url += api_id
+        print(url)
 
-    # Parsing JSON
-    description = weather_json['weather'][0]['description']
-    temp_min = weather_json['main']['temp_min']
-    temp_max = weather_json['main']['temp_max']
+        weather_request = requests.get(url)
+        weather_json = weather_request.json()
+        print(weather_json)
 
-    # Creating the forecast
-    forecast = 'The foreast for today is '
-    forecast += description + ' with a high of ' + str(int(temp_max))
-    forecast += ' and a low of ' + str(int(temp_min)) + '.'
+        # Parsing JSON
+        description = weather_json['weather'][0]['description']
+        temp_min = weather_json['main']['temp_min']
+        temp_max = weather_json['main']['temp_max']
 
-    return forecast
+        # Creating the forecast
+        forecast = city + ':  ' + description + ', '
+        forecast += str(int(temp_min)) + ' ~ '+ str(int(temp_max)) + ' C\n'
+
+        forecasts.append(forecast)
+
+    return forecasts
+
+#print(get_weather_forcast(cities))

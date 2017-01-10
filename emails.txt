@@ -1,1 +1,0 @@
-python.weather.forecast@gmail.com, Python Weather
